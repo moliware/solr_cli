@@ -1,4 +1,4 @@
-solr-cli
+solr_cli
 ========
 
 Command line client for solr
