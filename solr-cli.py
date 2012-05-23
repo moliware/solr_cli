@@ -3,6 +3,7 @@
 solr-cli
 ~~~~~~~~
 
+Command line client for solr. 
 
 
 """
@@ -26,10 +27,23 @@ class SolrCLI(cmd.Cmd):
         self.prompt = '(disconnected)$ '
 
     def do_connect(self, host):
+        """connect <solr_url>
+
+        connects to a solr server located in solr_url. Example:
+
+        connect http://localhost:8983/solr
+        """
         self.solr = mysolr.Solr(host)
         self.prompt = '(%s)$ ' % host
     
     def do_query(self, query):
+        """query <q>
+
+        makes a query to a solr server. Examples:
+
+        query *:*
+        query type:"book" AND price:[* TO 10]
+        """
         try:
             response = self.solr.search(q=query)
             print self.__highlight(response.raw_response)
@@ -37,16 +51,23 @@ class SolrCLI(cmd.Cmd):
             print e.message
 
     def do_uri(self, uri):
+        """uri <uri>
+
+        makes a requests to a solr server allowing all paramaters. Example:
+
+        uri q=*:*&facet=true&facet.field=price&rows=0
+        """
         try:
             response = self.solr.search(**parse_qs(uri))
             print self.__highlight(response.raw_response)
         except Exception, e:
             print e.message
 
-    def do_EOF(self, line):
-        return True
-
     def do_quit(self, line):
+        """quit
+
+        exit from the command line.
+        """
         return True
 
     def __highlight(self, data):
