@@ -30,14 +30,23 @@ class SolrCLI(cmd.Cmd):
         self.prompt = '(%s)$ ' % host
     
     def do_query(self, query):
-        response = self.solr.search(q=query)
-        print self.__highlight(response.raw_response)
+        try:
+            response = self.solr.search(q=query)
+            print self.__highlight(response.raw_response)
+        except Exception, e:
+            print e.message
 
     def do_uri(self, uri):
-        response = self.solr.search(**parse_qs(uri))
-        print self.__highlight(response.raw_response)
+        try:
+            response = self.solr.search(**parse_qs(uri))
+            print self.__highlight(response.raw_response)
+        except Exception, e:
+            print e.message
 
     def do_EOF(self, line):
+        return True
+
+    def do_quit(self, line):
         return True
 
     def __highlight(self, data):
