@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-solr-cli
+solr_cli
 ~~~~~~~~
 
 Command line client for solr. 
@@ -76,5 +76,10 @@ class SolrCLI(cmd.Cmd):
         return highlight(formatted, formatter=TerminalFormatter(),
                          lexer=JavascriptLexer()).rstrip()
 
-if __name__ == '__main__':
+
+def main():
     SolrCLI().cmdloop()
+
+
+if __name__ == '__main__':
+    main()
