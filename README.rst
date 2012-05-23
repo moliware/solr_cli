@@ -18,11 +18,23 @@ From pypi: ::
 
 Usage
 -----
+
+Execute command line tool
+
 ::
 
   $ solr_cli
-  
+  (disconnected)$
+
+
+Connect to a solr instance::
+
   (disconnected)$ connect http://localhost:8983/solr/
+  (http://localhost:8983/solr/)$
+
+
+Make a query::
+
   (http://localhost:8983/solr/)$ query *:*
 
   {
@@ -42,6 +54,8 @@ Usage
         ]
     }
   }
+
+Make a query using http parameters::
 
   (http://localhost:8983/solr/)$ uri q=*:*&rows=0
   {
