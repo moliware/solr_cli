@@ -36,6 +36,19 @@ class SolrCLI(cmd.Cmd):
         """
         self.solr = mysolr.Solr(host)
         self.prompt = '(%s)$ ' % host
+
+    def do_ping(self, line):
+        """ping
+
+        checks if the solr server is up
+        """
+        try:
+            if self.solr.ping():
+                print 'Solr server is up'
+            else:
+                print 'Can\'t connect to solr server'
+        except Exception, e:
+            print e.message
     
     def do_query(self, query):
         """query <q>
