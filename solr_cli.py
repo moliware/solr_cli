@@ -44,7 +44,7 @@ class SolrCLI(cmd.Cmd):
         """
         try:
             if self.solr.ping():
-                print 'Solr server is up'
+                print 'OK'
             else:
                 print 'Can\'t connect to solr server'
         except Exception, e:
@@ -83,6 +83,17 @@ class SolrCLI(cmd.Cmd):
         exit from the command line.
         """
         return True
+
+    def do_commit(self, line):
+        """commit
+
+        sends a commit to solr server
+        """
+        try:
+            self.solr.commit()
+            print 'OK'
+        except Exception, e:
+            print e.message
 
     def __highlight(self, data):
         formatted = json.dumps(data, indent=4)
