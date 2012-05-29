@@ -95,6 +95,16 @@ class SolrCLI(cmd.Cmd):
         except Exception, e:
             print e.message
 
+    def do_optimize(self, line):
+        """commit
+
+        sends optmize operation to solr server
+        """
+        try:
+            self.solr.optimize()
+            print 'OK'
+        except Exception, e:
+            print e.message
     def __highlight(self, data):
         formatted = json.dumps(data, indent=4)
         return highlight(formatted, formatter=TerminalFormatter(),
