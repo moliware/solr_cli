@@ -6,7 +6,6 @@ solr_cli
 
 Command line client for solr. 
 
-
 """
 import cmd
 import json
@@ -35,21 +34,21 @@ class SolrCLI(cmd.Cmd):
         connect http://localhost:8983/solr
         """
         self.solr = mysolr.Solr(host)
-        self.prompt = '(%s)$ ' % host
+        if self.solr.is_up():
+            self.prompt = '(%s)$ ' % host
+        else:
+            print 'Cant\'t connect to %s' % host
 
     def do_ping(self, line):
         """ping
 
         checks if the solr server is up
         """
-        try:
-            if self.solr.ping():
-                print 'OK'
-            else:
-                print 'Can\'t connect to solr server'
-        except Exception, e:
-            print e.message
-    
+        if self.solr.is_up():
+            print 'OK'
+        else:
+            print 'Cant\'t connect to %s' % host
+
     def do_query(self, query):
         """query <q>
 
@@ -58,11 +57,11 @@ class SolrCLI(cmd.Cmd):
         query *:*
         query type:"book" AND price:[* TO 10]
         """
-        try:
-            response = self.solr.search(q=query)
-            print self.__highlight(response.raw_response)
-        except Exception, e:
-            print e.message
+        response = self.solr.search(q=query)
+        if response.status == 200:
+            print self.__highlight(response.raw_content)
+        else:
+            print response.message
 
     def do_uri(self, uri):
         """uri <uri>
@@ -71,11 +70,12 @@ class SolrCLI(cmd.Cmd):
 
         uri q=*:*&facet=true&facet.field=price&rows=0
         """
-        try:
-            response = self.solr.search(**parse_qs(uri))
-            print self.__highlight(response.raw_response)
-        except Exception, e:
-            print e.message
+        response = self.solr.search(**parse_qs(uri))
+        if response.status == 200:
+            print type(response.raw_content)
+            print self.__highlight(response.raw_content)
+        else:
+            print response.message
 
     def do_quit(self, line):
         """quit
@@ -89,22 +89,23 @@ class SolrCLI(cmd.Cmd):
 
         sends a commit to solr server
         """
-        try:
-            self.solr.commit()
+        response = self.solr.commit()
+        if response.satus == 200:
             print 'OK'
-        except Exception, e:
-            print e.message
-
+        else:
+            print response.message
+ 
     def do_optimize(self, line):
         """commit
 
-        sends optmize operation to solr server
+        sends optimize operation to solr server
         """
-        try:
-            self.solr.optimize()
+        response = self.solr.optimize()
+        if response.satus == 200:
             print 'OK'
-        except Exception, e:
-            print e.message
+        else:
+            print response.message
+
     def __highlight(self, data):
         formatted = json.dumps(data, indent=4)
         return highlight(formatted, formatter=TerminalFormatter(),
