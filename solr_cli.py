@@ -17,6 +17,9 @@ from pygments.lexers import JavascriptLexer
 from urlparse import parse_qs
 
 
+__version__ = '0.1'
+
+ 
 class SolrCLI(cmd.Cmd):
     """ """
 

@@ -6,6 +6,8 @@ try:
 except ImportError:
     from distutils.core import setup
 
+from solr_cli import __version__
+
 
 REQUIRED = ['mysolr==0.7', 'pygments']
 CLASSIFIERS = [
@@ -21,7 +23,7 @@ CLASSIFIERS = [
 
 
 setup(name='solr_cli',
-      version='0.1',
+      version='__version__',
       description='Command line client for Apache Solr',
       long_description = open('README.rst').read(),
       author='Miguel Olivares',
