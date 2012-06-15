@@ -50,10 +50,13 @@ class SolrCLI(cmd.Cmd):
 
         checks if the solr server is up
         """
-        if self.solr.is_up():
-            print 'OK'
+        if self.solr:
+            if self.solr.is_up():
+                print 'OK'
+            else:
+                print 'Cant\'t connect to %s' % host
         else:
-            print 'Cant\'t connect to %s' % host
+            print 'Connect to a solr server first'
 
     def do_query(self, query):
         """query <q>
@@ -63,6 +66,9 @@ class SolrCLI(cmd.Cmd):
         query *:*
         query type:"book" AND price:[* TO 10]
         """
+        if not self.solr:
+            print 'Connect to a solr server first'
+            return            
         if query:
             response = self.solr.search(q=query)
             if response.status == 200:
@@ -80,6 +86,9 @@ class SolrCLI(cmd.Cmd):
 
         uri q=*:*&facet=true&facet.field=price&rows=0
         """
+        if not self.solr:
+            print 'Connect to a solr server first'
+            return
         params = parse_qs(uri)
         if 'q' in params:
             response = self.solr.search(**params)
@@ -102,22 +111,28 @@ class SolrCLI(cmd.Cmd):
 
         sends a commit to solr server
         """
-        response = self.solr.commit()
-        if response.status == 200:
-            print 'OK'
+        if self.solr:
+            response = self.solr.commit()
+            if response.status == 200:
+                print 'OK'
+            else:
+                print response.message
         else:
-            print response.message
+            print 'Connect to a solr server first'
  
     def do_optimize(self, line):
         """commit
 
         sends optimize operation to solr server
         """
-        response = self.solr.optimize()
-        if response.status == 200:
-            print 'OK'
+        if self.solr:
+            response = self.solr.optimize()
+            if response.status == 200:
+                print 'OK'
+            else:
+                print response.message
         else:
-            print response.message
+            print 'Connect to a solr server first'
 
     def __highlight(self, data):
         formatted = json.dumps(data, indent=4)
