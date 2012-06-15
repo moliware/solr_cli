@@ -36,11 +36,14 @@ class SolrCLI(cmd.Cmd):
 
         connect http://localhost:8983/solr
         """
-        self.solr = mysolr.Solr(host)
-        if self.solr.is_up():
-            self.prompt = '(%s)$ ' % host
+        if host:
+            self.solr = mysolr.Solr(host)
+            if self.solr.is_up():
+                self.prompt = '(%s)$ ' % host
+            else:
+                print 'Cant\'t connect to %s' % host
         else:
-            print 'Cant\'t connect to %s' % host
+            print self.do_connect.__doc__
 
     def do_ping(self, line):
         """ping
@@ -60,25 +63,32 @@ class SolrCLI(cmd.Cmd):
         query *:*
         query type:"book" AND price:[* TO 10]
         """
-        response = self.solr.search(q=query)
-        if response.status == 200:
-            print self.__highlight(response.raw_content)
+        if query:
+            response = self.solr.search(q=query)
+            if response.status == 200:
+                print self.__highlight(eval(response.raw_content))
+            else:
+                print response.message
         else:
-            print response.message
+            print self.do_query.__doc__
 
     def do_uri(self, uri):
         """uri <uri>
 
-        makes a requests to a solr server allowing all paramaters. Example:
+        makes a requests to a solr server allowing all paramaters. 
+        'q' must be specified. Example:
 
         uri q=*:*&facet=true&facet.field=price&rows=0
         """
-        response = self.solr.search(**parse_qs(uri))
-        if response.status == 200:
-            print type(response.raw_content)
-            print self.__highlight(response.raw_content)
+        params = parse_qs(uri)
+        if 'q' in params:
+            response = self.solr.search(**params)
+            if response.status == 200:
+                print self.__highlight(eval(response.raw_content))
+            else:
+                print response.message
         else:
-            print response.message
+            print self.do_uri.__doc__
 
     def do_quit(self, line):
         """quit
@@ -93,7 +103,7 @@ class SolrCLI(cmd.Cmd):
         sends a commit to solr server
         """
         response = self.solr.commit()
-        if response.satus == 200:
+        if response.status == 200:
             print 'OK'
         else:
             print response.message
@@ -104,7 +114,7 @@ class SolrCLI(cmd.Cmd):
         sends optimize operation to solr server
         """
         response = self.solr.optimize()
-        if response.satus == 200:
+        if response.status == 200:
             print 'OK'
         else:
             print response.message
