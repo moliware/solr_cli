@@ -6,17 +6,13 @@
 Welcome to solr_cli's documentation!
 ====================================
 
+.. image:: _static/example.png
+
 Contents:
+---------
 
 .. toctree::
    :maxdepth: 2
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+   userguide/installation
+   userguide/commands
