@@ -79,7 +79,7 @@ class SolrCLI(cmd.Cmd):
             print self.do_query.__doc__
 
     def do_uri(self, uri):
-        """uri <uri>
+        """uri <params>
 
         makes a requests to a solr server allowing all paramaters. 
         'q' must be specified. Example:
