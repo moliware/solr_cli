@@ -23,7 +23,7 @@ CLASSIFIERS = [
 
 
 setup(name='solr_cli',
-      version='__version__',
+      version=__version__,
       description='Command line client for Apache Solr',
       long_description = open('README.rst').read(),
       author='Miguel Olivares',
