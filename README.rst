@@ -76,4 +76,4 @@ Make a query using http parameters::
   }
 
 
-.. _here: http://solr_cli.readthedocs.org
+.. _here: http://solr_cli.moliware.com
