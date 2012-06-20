@@ -1,7 +1,7 @@
 solr_cli
 ========
 
-Command line client for solr
+Command line client for solr. Check full documentation here_
 
 
 Installation
@@ -74,3 +74,6 @@ Make a query using http parameters::
           "docs": []
       }
   }
+
+
+.. _here: http://solr_cli.readthedocs.org
