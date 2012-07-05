@@ -119,6 +119,29 @@ class SolrCLI(cmd.Cmd):
                 print response.message
         else:
             print 'Connect to a solr server first'
+
+    def do_delete(self, query):
+        """delete <q>
+
+        Delete by query. Examples:
+
+        Removes all the index::
+            
+            delete *:*
+        
+        Removes documents whose type is book ::
+
+            delete type:"book"
+        """
+        if not self.solr:
+            print 'Connect to a solr server first'
+            return            
+        if query:
+            response = self.solr.delete_by_query(query)
+            if response.status != 200:
+                print response.message
+        else:
+            print self.do_query.__doc__
  
     def do_optimize(self, line):
         """commit
