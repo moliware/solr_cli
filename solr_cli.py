@@ -10,10 +10,11 @@ Command line client for solr.
 import cmd
 import json
 import mysolr
+import re
 
 from pygments import highlight
 from pygments.formatters import TerminalFormatter
-from pygments.lexers import JavascriptLexer
+from pygments.lexers import JavascriptLexer, XmlLexer
 from urlparse import parse_qs
 
 
@@ -154,6 +155,31 @@ class SolrCLI(cmd.Cmd):
                 print 'OK'
             else:
                 print response.message
+        else:
+            print 'Connect to a solr server first'
+
+    def do_schema(self, line):
+        """schema
+
+        prints the schema of the current index
+        """
+        if self.solr:
+            schema = self.solr.schema()
+            print highlight(schema, formatter=TerminalFormatter(),
+                            lexer=XmlLexer()).rstrip()
+        else:
+            print 'Connect to a solr server first'
+
+    def do_fields(self, line):
+        """fields
+
+        prints the fields of the current schema
+        """
+        if self.solr:
+            schema = self.solr.schema()
+            search = re.search(r'<fields>.*?</fields>', schema, re.DOTALL)
+            print highlight(search.group(0), formatter=TerminalFormatter(),
+                            lexer=XmlLexer()).rstrip()
         else:
             print 'Connect to a solr server first'
 
