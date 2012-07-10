@@ -9,7 +9,7 @@ except ImportError:
 from solr_cli import __version__
 
 
-REQUIRED = ['mysolr==0.7', 'pygments']
+REQUIRED = ['mysolr==0.7.1', 'pygments']
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
