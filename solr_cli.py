@@ -11,6 +11,7 @@ import cmd
 import json
 import mysolr
 import re
+import sys
 
 from pygments import highlight
 from pygments.formatters import TerminalFormatter
@@ -24,11 +25,13 @@ __version__ = '0.2'
 class SolrCLI(cmd.Cmd):
     """ """
 
-    def __init__(self):
+    def __init__(self, host=None):
         # Old style class :\
         cmd.Cmd.__init__(self)
         self.solr = None
         self.prompt = '(disconnected)$ '
+        if host:
+            self.do_connect(host)
 
     def do_connect(self, host):
         """connect <solr_url>
@@ -190,7 +193,8 @@ class SolrCLI(cmd.Cmd):
 
 
 def main():
-    SolrCLI().cmdloop()
+    host = sys.argv[1] if len(sys.argv) >= 2 else None
+    SolrCLI(host).cmdloop()
 
 
 if __name__ == '__main__':
