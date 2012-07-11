@@ -76,7 +76,7 @@ class SolrCLI(cmd.Cmd):
         if query:
             response = self.solr.search(q=query)
             if response.status == 200:
-                print self.__highlight(eval(response.raw_content))
+                print self.__highlight(response.raw_content)
             else:
                 print response.message
         else:
@@ -97,7 +97,7 @@ class SolrCLI(cmd.Cmd):
         if 'q' in params:
             response = self.solr.search(**params)
             if response.status == 200:
-                print self.__highlight(eval(response.raw_content))
+                print self.__highlight(response.raw_content)
             else:
                 print response.message
         else:
