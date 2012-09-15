@@ -11,6 +11,7 @@ import cmd
 import json
 import mysolr
 import re
+import signal
 import sys
 
 from pygments import highlight
@@ -21,7 +22,7 @@ from urlparse import parse_qs
 
 __version__ = '0.2'
 
- 
+
 class SolrCLI(cmd.Cmd):
     """ """
 
@@ -32,6 +33,9 @@ class SolrCLI(cmd.Cmd):
         self.prompt = '(disconnected)$ '
         if host:
             self.do_connect(host)
+        # Alias
+        self.do_EOF = self.do_exit = self.do_quit
+
 
     def do_connect(self, host):
         """connect <solr_url>
@@ -108,6 +112,7 @@ class SolrCLI(cmd.Cmd):
 
         exit from the command line.
         """
+        print 'Bye'
         return True
 
     def do_commit(self, line):
@@ -139,7 +144,7 @@ class SolrCLI(cmd.Cmd):
         """
         if not self.solr:
             print 'Connect to a solr server first'
-            return            
+            return
         if query:
             response = self.solr.delete_by_query(query)
             if response.status != 200:
@@ -197,5 +202,11 @@ def main():
     SolrCLI(host).cmdloop()
 
 
+def bye(signal, frame):
+    print 'Bye'
+    sys.exit(0)
+
+
 if __name__ == '__main__':
+    signal.signal(signal.SIGINT, bye)
     main()
