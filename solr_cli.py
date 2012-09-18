@@ -31,11 +31,19 @@ class SolrCLI(cmd.Cmd):
         cmd.Cmd.__init__(self)
         self.solr = None
         self.prompt = '(disconnected)$ '
+        self.connected = False
         if host:
             self.do_connect(host)
         # Alias
         self.do_EOF = self.do_exit = self.do_quit
 
+    def precmd(self, line):
+        if self.connected:
+            return line
+        elif not line.startswith('connect '):
+            print 'Connect to a solr server first'
+            return ''
+        return line
 
     def do_connect(self, host):
         """connect <solr_url>
@@ -48,6 +56,7 @@ class SolrCLI(cmd.Cmd):
             self.solr = mysolr.Solr(host)
             if self.solr.is_up():
                 self.prompt = '(%s)$ ' % host
+                self.connected = True
             else:
                 print 'Cant\'t connect to %s' % host
         else:
@@ -58,13 +67,10 @@ class SolrCLI(cmd.Cmd):
 
         checks if the solr server is up
         """
-        if self.solr:
-            if self.solr.is_up():
-                print 'OK'
-            else:
-                print 'Cant\'t connect to %s' % host
+        if self.solr.is_up():
+            print 'OK'
         else:
-            print 'Connect to a solr server first'
+            print 'Cant\'t connect to %s' % host
 
     def do_query(self, query):
         """query <q>
@@ -74,9 +80,6 @@ class SolrCLI(cmd.Cmd):
         query *:*
         query type:"book" AND price:[* TO 10]
         """
-        if not self.solr:
-            print 'Connect to a solr server first'
-            return            
         if query:
             response = self.solr.search(q=query)
             if response.status == 200:
@@ -94,9 +97,6 @@ class SolrCLI(cmd.Cmd):
 
         uri q=*:*&facet=true&facet.field=price&rows=0
         """
-        if not self.solr:
-            print 'Connect to a solr server first'
-            return
         params = parse_qs(uri)
         if 'q' in params:
             response = self.solr.search(**params)
@@ -120,14 +120,11 @@ class SolrCLI(cmd.Cmd):
 
         sends a commit to solr server
         """
-        if self.solr:
-            response = self.solr.commit()
-            if response.status == 200:
-                print 'OK'
-            else:
-                print response.message
+        response = self.solr.commit()
+        if response.status == 200:
+            print 'OK'
         else:
-            print 'Connect to a solr server first'
+            print response.message
 
     def do_delete(self, query):
         """delete <q>
@@ -142,9 +139,6 @@ class SolrCLI(cmd.Cmd):
 
             delete type:"book"
         """
-        if not self.solr:
-            print 'Connect to a solr server first'
-            return
         if query:
             response = self.solr.delete_by_query(query)
             if response.status != 200:
@@ -157,39 +151,30 @@ class SolrCLI(cmd.Cmd):
 
         sends optimize operation to solr server
         """
-        if self.solr:
-            response = self.solr.optimize()
-            if response.status == 200:
-                print 'OK'
-            else:
-                print response.message
+        response = self.solr.optimize()
+        if response.status == 200:
+            print 'OK'
         else:
-            print 'Connect to a solr server first'
+            print response.message
 
     def do_schema(self, line):
         """schema
 
         prints the schema of the current index
         """
-        if self.solr:
-            schema = self.solr.schema()
-            print highlight(schema, formatter=TerminalFormatter(),
-                            lexer=XmlLexer()).rstrip()
-        else:
-            print 'Connect to a solr server first'
+        schema = self.solr.schema()
+        print highlight(schema, formatter=TerminalFormatter(),
+                        lexer=XmlLexer()).rstrip()
 
     def do_fields(self, line):
         """fields
 
         prints the fields of the current schema
         """
-        if self.solr:
-            schema = self.solr.schema()
-            search = re.search(r'<fields>.*?</fields>', schema, re.DOTALL)
-            print highlight(search.group(0), formatter=TerminalFormatter(),
-                            lexer=XmlLexer()).rstrip()
-        else:
-            print 'Connect to a solr server first'
+        schema = self.solr.schema()
+        search = re.search(r'<fields>.*?</fields>', schema, re.DOTALL)
+        print highlight(search.group(0), formatter=TerminalFormatter(),
+                        lexer=XmlLexer()).rstrip()
 
     def __highlight(self, data):
         formatted = json.dumps(data, indent=4)
