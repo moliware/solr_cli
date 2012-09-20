@@ -15,7 +15,6 @@ import readline
 import signal
 import sys
 
-from blessings import Terminal
 from os.path import expanduser
 from pygments import highlight
 from pygments.formatters import TerminalFormatter
@@ -37,7 +36,6 @@ class SolrCLI(object):
     def __init__(self, host=None, history_file=expanduser("~/.solr_cli")):
         self.solr = None
         self.connected = False
-        self.term = Terminal()
         self.host = host
         self.history_file = history_file
 
@@ -92,6 +90,7 @@ class SolrCLI(object):
 
     def __highlight(self, data):
         formatted = json.dumps(data, indent=4)
+        print formatted
         return highlight(formatted, formatter=TerminalFormatter(),
                          lexer=JavascriptLexer()).rstrip()
 
@@ -104,10 +103,6 @@ class SolrCLI(object):
             tail = line[index + 1:]
         return command, tail
 
-    def __style_prompt(self):
-        style = self.term.bold_green if self.connected else self.term.bold_red
-        return style(self.prompt)
-
     def __save_history(self):
         readline.write_history_file(self.history_file)
 
@@ -115,9 +110,10 @@ class SolrCLI(object):
         end = False
         while not end:
             try:
-                line = raw_input(self.__style_prompt())
+                line = raw_input(self.prompt)
             except EOFError:
-                line = 'EOF'
+                end = True
+                continue
             line = line.strip()
             if not line:
                 continue
@@ -268,6 +264,7 @@ class SolrCLI(object):
 def main():
     host = sys.argv[1] if len(sys.argv) >= 2 else None
     SolrCLI(host).loop()
+    exit(0)
 
 
 def bye(signal, frame):
