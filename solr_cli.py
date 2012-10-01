@@ -122,12 +122,20 @@ class SolrCLI(object):
                 if self.connected or command not in self.require_connexion:
                     getattr(self, 'do_' + command)(tail)
                 elif not self.connected and command in self.require_connexion:
-                    print self.term.red('Connect to a solr server first')
+                    print 'Connect to a solr server first'
             else:
-                print self.term.red('Invalid command. Type help.')
+                print 'Invalid command. Type help.'
 
-    def help(self):
-        pass
+    def do_help(self, command):
+        """help <command>
+
+        Prints help of the command specified.
+        """
+        if command in self.valid_commands:
+            print getattr(self, 'do_' + command).__doc__
+        else:
+            print self.do_help.__doc__
+            print 'Command list :\n\t%s' % '\n\t'.join(self.valid_commands)
 
     def do_connect(self, host):
         """connect <solr_url>
