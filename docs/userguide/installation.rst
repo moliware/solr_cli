@@ -23,8 +23,3 @@ source code you have to install it.
 
 
 .. _mysolr: http://mysolr.redtuna.org
-
-Execution
----------
-
-Just run 'solr_cli' in your shell

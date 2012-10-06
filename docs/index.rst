@@ -15,4 +15,4 @@ Contents:
    :maxdepth: 2
 
    userguide/installation
-   userguide/commands
+   userguide/userguide
