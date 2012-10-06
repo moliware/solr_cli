@@ -9,7 +9,7 @@ except ImportError:
 from solr_cli import __version__
 
 
-REQUIRED = ['mysolr==0.7.1', 'pygments']
+REQUIRED = ['mysolr>=0.7.1', 'pygments']
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Intended Audience :: Developers',
@@ -32,6 +32,7 @@ setup(name='solr_cli',
       install_requires=REQUIRED,
       classifiers=CLASSIFIERS,
       py_modules=['solr_cli'],
+      test_suite='tests',
       entry_points={
         'console_scripts': [
             'solr_cli = solr_cli:main',
