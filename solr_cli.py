@@ -90,7 +90,6 @@ class SolrCLI(object):
 
     def __highlight(self, data):
         formatted = json.dumps(data, indent=4)
-        print formatted
         return highlight(formatted, formatter=TerminalFormatter(),
                          lexer=JavascriptLexer()).rstrip()
 
