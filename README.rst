@@ -3,6 +3,12 @@ solr_cli
 
 Command line client for solr. Check full documentation here_
 
+Status
+------
+
+.. image:: https://secure.travis-ci.org/moliware/solr_cli.png
+   :target: https://secure.travis-ci.org/moliware/solr_cli
+
 
 Installation
 ------------
